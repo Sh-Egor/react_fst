@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const {body, validationResult} = require('express-validator/check');
 const bodyParser = require('body-parser');
-const {userValidator} = require('./services/validator');
+const {userValidator,loginValidator} = require('./services/validator');
 const userController = require('./controllers/users-controller');
 
 
@@ -13,6 +13,7 @@ app.get('/hello', (req,res,next) =>{
 });
 
 app.post('/api/signup', userValidator, userController.create);
-app.listen(4000, () =>{
+app.post('/api/signup', userValidator, userController.login);
+app.listen(3000, () =>{
     console.log('Server started on 4000 port');
 })

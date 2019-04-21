@@ -1,6 +1,9 @@
 const {User} = require('../models');
 const { validationResult } = require('express-validator/check');
 const bcryptjs = require('bcryptjs');
+const validateDecorator = require('../services/validate-decorator');
+const { createToken } = require('../services/auth-service');
+
 
 function create(req,res,next){
     const errors = validationResult(req);
@@ -28,6 +31,18 @@ function create(req,res,next){
     })
 }
 
-module.exports = {
-    create
+function login(req,res,next){
+    // console.log('Login');
+    const loginUser =req.body;
+    User.login(loginUser).then(createToken).then( token =>{
+        res.json({ token});
+        next()
+    }).catch(error => {
+        res.status(error.statusCode || 401).json({ error });
+    })
 }
+
+module.exports = validateDecorator({
+    create,
+    login
+})
